@@ -4,8 +4,9 @@ const buttons = document.querySelectorAll('.userBtn');
 
 buttons.forEach((btn) => {
   btn.addEventListener('click', function handleClick(event) {
+    var host = window.location.hostname;
     userId = this.id;
-    window.location.href = `http://localhost:8080/api/users/${userId}`;
+    window.location.href = `https://${host}/api/users/${userId}`;
   });
 });
 /////////////////////////////////////////////////////////////////////////
@@ -21,8 +22,9 @@ switchBtn.forEach((btn) => {
 });
 
 const switchPremium = async () => {
+  var host = window.location.hostname;
   const response = await fetch(
-    `http://localhost:8080/api/users/premiumSwitch/${userId}`,
+    `https://${host}/api/users/premiumSwitch/${userId}`,
     {
       method: 'PUT',
       headers: {
@@ -31,7 +33,7 @@ const switchPremium = async () => {
     }
   );
   const userJson = await response.json(); //extract JSON from the http response
-  window.location.href = `http://localhost:8080/api/users/${userId}`;
+  window.location.href = `https://${host}/api/users/${userId}`;
 };
 
 //delete
@@ -50,12 +52,13 @@ deleteBtn.forEach((btn) => {
 });
 
 const deleteUser = async () => {
-  const response = await fetch(`http://localhost:8080/api/users/${userId}`, {
+  var host = window.location.hostname;
+  const response = await fetch(`https://${host}/api/users/${userId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },
   });
   const userJson = await response.json(); //extract JSON from the http response
-  window.location.href = `http://localhost:8080/api/users`;
+  window.location.href = `https://${host}/api/users`;
 };
