@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { generateUser } from '../utils/generateData.js';
+import { generateUser } from '../Utils/generateData.js';
 import { userController } from '../controllers/users.controller.js';
 import { isUser, isAdmin, isPremiumOrAdmin } from '../middlewares/auth.js';
 
