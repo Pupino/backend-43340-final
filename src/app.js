@@ -30,20 +30,20 @@ var fileStoreOptions = {};
 const app = express();
 
 //Swagger API's documentation
-// import swaggerJSDoc from 'swagger-jsdoc';
-// import swaggerUiExpress from 'swagger-Ui-Express';
-// const specs = swaggerJSDoc({
-//   definition: {
-//     openapi: '3.0.1',
-//     info: {
-//       title: 'Backend CoderHouse Deliverable',
-//       description: 'The Project is about an e-commerce demo',
-//       version: 1.0,
-//     },
-//   },
-//   apis: [`${__dirname}/docs/**/*.yaml`],
-// });
-// app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-Ui-Express';
+const specs = swaggerJSDoc({
+  definition: {
+    openapi: '3.0.1',
+    info: {
+      title: 'Backend CoderHouse Deliverable',
+      description: 'The Project is about an e-commerce demo',
+      version: 1.0,
+    },
+  },
+  apis: [`${__dirname}/docs/**/*.yaml`],
+});
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 app.use(
   compression({
