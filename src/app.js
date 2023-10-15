@@ -31,7 +31,7 @@ const app = express();
 
 //Swagger API's documentation
 import swaggerJSDoc from 'swagger-jsdoc';
-import swaggerUiExpress from 'swagger-Ui-Express';
+import swaggerUiExpress from 'swagger-ui-express';
 const specs = swaggerJSDoc({
   definition: {
     openapi: '3.0.1',
