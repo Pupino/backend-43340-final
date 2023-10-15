@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { isUser, isAdmin, isPremiumOrAdmin } from '../middlewares/auth.js';
 import { productController } from '../controllers/products.controller.js';
-import { generateProduct } from '../utils/generateData.js';
+import { generateProduct } from '../Utils/generateData.js';
 import CustomError from '../services/errors/custom-error.js';
 import EErros from '../services/errors/enum.js';
 export const productsRouter = Router();
