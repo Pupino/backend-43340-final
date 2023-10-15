@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { isUser, isAdmin, isPremiumOrAdmin } from '../middlewares/auth.js';
-import { productController } from '../controllers/products.controller.js';
-import { generateProduct } from '../utils/generateData.js';
-import CustomError from '../services/errors/custom-error.js';
-import EErros from '../services/errors/enum.js';
+import { isUser, isAdmin, isPremiumOrAdmin } from './middlewares/auth.js';
+import { productController } from './controllers/products.controller.js';
+import { generateProduct } from './utils/generateData.js';
+import CustomError from './services/errors/custom-error.js';
+import EErros from './services/errors/enum.js';
 export const productsRouter = Router();
-import { logger } from '../Utils/logger.js';
+import { logger } from './Utils/logger.js';
 //Ejemplo: http://localhost:8080/api/products/?page=1&limit=5&sort=asc&query=PAQ
 productsRouter.get('/', isUser, productController.getProducts);
 productsRouter.get(
