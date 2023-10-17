@@ -1,9 +1,10 @@
+const protocol = window.location.protocol;
+const host = window.location.host;
 let cartId;
 let prodId;
 document.addEventListener('DOMContentLoaded', function (event) {
   const createCart = async () => {
-    var host = window.location.hostname;
-    const response = await fetch('https://' + host + '/api/carts', {
+    const response = await fetch(`${protocol}//${host}/api/carts`, {
       method: 'POST',
       //body: myBody, // string or object
       headers: {
@@ -27,10 +28,9 @@ buttons.forEach((box) => {
 });
 
 const addProdToCart = async () => {
-  var host = window.location.hostname;
   const data = { quantity: 1 };
   const response = await fetch(
-    `https://${host}/api/carts/${cartId}/products/${prodId}`,
+    `${protocol}//${host}/api/carts/${cartId}/products/${prodId}`,
     {
       method: 'PUT',
       headers: {
@@ -45,8 +45,7 @@ const addProdToCart = async () => {
 //check cart
 const cartBtn = document.getElementById('cartBtn');
 cartBtn.addEventListener('click', function handleClick(event) {
-  var host = window.location.hostname;
-  window.location.href = `https://${host}/api/carts/${cartId}`;
+  window.location.href = `${protocol}//${host}/api/carts/${cartId}`;
 });
 
 //delete
@@ -67,8 +66,7 @@ deleteBtn.forEach((btn) => {
 const deleteProduct = async () => {
   const modalOverlay = document.getElementById('modal-overlay');
   modalOverlay.style.display = 'flex'; // Muestra el modal
-  var host = window.location.hostname;
-  const response = await fetch(`https://${host}/api/products/${prodId}`, {
+  const response = await fetch(`${protocol}//${host}/api/products/${prodId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -76,6 +74,5 @@ const deleteProduct = async () => {
   });
   const prodJson = await response.json(); //extract JSON from the http response
   //modalOverlay.style.display = 'none'; // Oculta el modal una vez que se complete la llamada
-  var host = window.location.hostname;
-  window.location.href = `https://${host}/api/products`;
+  window.location.href = `${protocol}//${host}/api/products`;
 };

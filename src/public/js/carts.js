@@ -1,3 +1,6 @@
+const protocol = window.location.protocol;
+const host = window.location.host;
+
 const purchaseBtn = document.getElementsByClassName('purchaseBtn');
 purchaseBtn[0].addEventListener('click', function handleClick(event) {
   const confirmacion = window.confirm(
@@ -12,13 +15,15 @@ purchaseBtn[0].addEventListener('click', function handleClick(event) {
 const purchaseCart = async () => {
   const modalOverlay = document.getElementById('modal-overlay');
   modalOverlay.style.display = 'flex'; // Muestra el modal
-  var host = window.location.hostname;
-  const response = await fetch(`https://${host}/api/carts/${cartId}/purchase`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+  const response = await fetch(
+    `${protocol}//${host}/api/carts/${cartId}/purchase`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
   const cartJson = await response.json(); //extract JSON from the http response
   // Accede al elemento HTML donde deseas mostrar el JSON
   const jsonOutput = document.getElementById('purchaseOutput');
@@ -48,13 +53,12 @@ clearBtn[0].addEventListener('click', function handleClick(event) {
 const clearCart = async () => {
   const modalOverlay = document.getElementById('modal-overlay');
   modalOverlay.style.display = 'flex'; // Muestra el modal
-  var host = window.location.hostname;
-  const response = await fetch(`https://${host}/api/carts/${cartId}`, {
+  const response = await fetch(`${protocol}//${host}/api/carts/${cartId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },
   });
   const cartJson = await response.json(); //extract JSON from the http response
-  window.location.href = `https://${host}/api/carts/${cartId}`;
+  window.location.href = `${protocol}//${host}/api/carts/${cartId}`;
 };
