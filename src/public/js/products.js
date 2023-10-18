@@ -28,6 +28,8 @@ buttons.forEach((box) => {
 });
 
 const addProdToCart = async () => {
+  const modalOverlay = document.getElementById('modal-overlay');
+  modalOverlay.style.display = 'flex'; // Muestra el modal
   const data = { quantity: 1 };
   const response = await fetch(
     `${protocol}//${host}/api/carts/${cartId}/products/${prodId}`,
@@ -40,6 +42,8 @@ const addProdToCart = async () => {
     }
   );
   const cartJson = await response.json(); //extract JSON from the http response
+  modalOverlay.style.display = 'none'; // Oculta el modal una vez que se complete la llamada
+  alert('You have added 1 unit to Cart');
 };
 
 //check cart

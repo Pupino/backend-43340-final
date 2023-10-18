@@ -37,9 +37,11 @@ export default class Carts {
   async getProductsByCartId(id) {
     //returns products array belong to cart id
     try {
-      const products = await CartModel.findById(id).populate(
-        'productsArray.prodId'
-      );
+      //const products = await CartModel.findById(id).populate('productsArray');
+      const products = await CartModel.findById(id).populate({
+        path: 'productsArray.prodId',
+        select: 'title price stock owner', // getting fields from products model
+      });
       return products;
     } catch (e) {
       return e;

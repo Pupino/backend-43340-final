@@ -20,7 +20,7 @@ paths:
               schema:
                 $ref: '#components/schemas/CartError'
     post:
-      summary: Create an Empty Cart for the logged user. A User must be connected because api needs Cookie connect.sid value. Note for Swagger UI and Swagger Editor users --> Cookie authentication is currently not supported for "try it out" requests due to browser security restrictions. See this issue for more information. SwaggerHub does not have this limitation (https://swagger.io/docs/specification/authentication/cookie-authentication/?sbsearch=Cookie%20Authentication)
+      summary: Create an Empty Cart for the logged user. You must be logged in as a user.
       security:
         - cookieAuth: []
       tags:
@@ -42,7 +42,9 @@ paths:
                 $ref: '#components/schemas/CartError'
   /api/carts/{cid}:
     get:
-      summary: Get an specific cart by id
+      summary: Get an specific cart by id. You must be logged in as a user.
+      security:
+        - cookieAuth: []
       tags:
         - Carts
       parameters:
@@ -54,11 +56,44 @@ paths:
             $type: String
       responses:
         '200':
-          description: Cart found
+          description: Cart found handlebar view successfully generated
           content:
-            application/json:
-              schema:
-                $ref: '#components/schemas/Cart'
+            text/html:
+              example: |
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8" />
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <link rel="stylesheet" href="/main.css" />
+                    <title>Document</title>
+                  </head>
+                  <body>
+                    <div id="modal-overlay" class="modal-overlay">
+                        <div id="spinner" class="spinner"></div>
+                    </div>
+                    <div>
+                      <strong>Cart</strong><a href='/api/products' style="float: right;">GO BACK</a>
+                      <pre id="purchaseOutput"></pre>
+                      <div id="cartInfo">
+                        <p><button id="{{cartId}}" class="purchaseBtn" >PURCHASE</button></p>
+                        <p><button id="{{cartId}}" class="clearBtn">CLEAN CART</button></p>
+                        <ol class="alternating-colors">
+                          {{#each payload}}
+                          <li>
+                            <strong>{{this.title}}</strong>
+                            <p>id: {{this.id}}</p>
+                            <p>Price: {{this.price}}</p>
+                            <p>Quantity: {{this.quantity}}</p>
+                          </li>
+                          {{/each}}
+                        </ol>
+                      </div>
+                    </div>
+                    <script src="../../js/carts.js"></script>
+                  </body>
+                </html>
         '400':
           description: Error usually when there are no user logged in or wrong cart id
           content:
@@ -66,7 +101,9 @@ paths:
               schema:
                 $ref: '#components/schemas/CartError'
     delete:
-      summary: Delete all Products from specific cart id
+      summary: Delete all Products from specific cart id. You must be logged in as a user.
+      security:
+        - cookieAuth: []
       tags:
         - Carts
       parameters:
@@ -89,9 +126,54 @@ paths:
             application/json:
               schema:
                 $ref: '#components/schemas/CartError'
+    put:
+      summary: Update all the products inside a Cart. Products array send via body. You must be logged in as a user.
+      security:
+        - cookieAuth: []
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: cart ID to be updated
+          schema:
+            $type: String
+      requestBody:
+        description: Array of Product should be indicated on Body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                prodsArray:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      prodId:
+                        type: string
+                      quantity:
+                        type: integer
+      responses:
+        '200':
+          description: Cart updated
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/AllProdsUpdCart'
+        '400':
+          description: Error usually when there are no user logged in or wrong cart id
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/CartError'
   /api/carts/{cid}/products/{pid}:
     put:
-      summary: Update the quantity on the indicated product id inside an specific cart id. Quantity is sent on body.
+      summary: Update the quantity of the indicated product id inside an specific cart id. Quantity is sent on body, API adds the indicated quantity to the existing one. You must be logged in as Admin user.
+      security:
+        - cookieAuth: []
       tags:
         - Carts
       parameters:
@@ -134,7 +216,9 @@ paths:
               schema:
                 $ref: '#components/schemas/CartError'
     delete:
-      summary: Removes the indicated product id from specific cart id
+      summary: Removes the indicated product id from specific cart id. You must be logged in as Admin user.
+      security:
+        - cookieAuth: []
       tags:
         - Carts
       parameters:
@@ -163,9 +247,9 @@ paths:
             application/json:
               schema:
                 $ref: '#components/schemas/CartError'
-  /{cid}/purchase:
+  /api/carts/{cid}/purchase:
     post:
-      summary: To purchase products on specific cart id
+      summary: To purchase products on specific cart id. You must be logged in as user.
       security:
         - cookieAuth: []
       tags:
@@ -183,9 +267,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#components/schemas/CartPurchased'
+                $ref: '#components/schemas/CartPurchased'
         '400':
           description: Error usually when there are no user logged in
           content:
@@ -227,7 +309,7 @@ components:
         error: xxxxx cart xxxxxx error
         cause: Contact Development team
         errorBackend:
-          name": xxxxx cart xxxxx error
+          name: xxxxx cart xxxxx error
           code: 11
     Cart:
       type: object
@@ -410,7 +492,7 @@ components:
         data:
           acknowledged: true
           modifiedCount: 1
-          upsertedId: nullable
+          upsertedId: null
           upsertedCount: 0
           matchedCount: 1
     ProdDelCart:
@@ -440,7 +522,7 @@ components:
         data:
           acknowledged: true
           modifiedCount: 1
-          upsertedId: nullable
+          upsertedId: null
           upsertedCount: 0
           matchedCount: 1
     AllProdsDelCart:
@@ -466,11 +548,41 @@ components:
               type: integer
       example:
         status: success
-        msg: product deleted from cart
+        msg: All products deleted from cart
         data:
           acknowledged: true
           modifiedCount: 1
-          upsertedId: nullable
+          upsertedId: null
+          upsertedCount: 0
+          matchedCount: 1
+    AllProdsUpdCart:
+      type: object
+      properties:
+        status:
+          type: string
+        msg:
+          type: string
+        data:
+          type: object
+          properties:
+            acknowledged:
+              type: boolean
+            modifiedCount:
+              type: integer
+            upsertedId:
+              type: string
+              nullable: true
+            upsertedCount:
+              type: integer
+            matchedCount:
+              type: integer
+      example:
+        status: success
+        msg: products array updated on cart
+        data:
+          acknowledged: true
+          modifiedCount: 1
+          upsertedId: null
           upsertedCount: 0
           matchedCount: 1
     CartPurchased:
@@ -527,14 +639,14 @@ components:
         msg: Products situation are
         products:
           toBePurchased:
-            prodId: 648bae59b7b670f1a3a09661
-            quantity: 5
-            unitPrice: 2150
-            totalPrice: 10750
+            - prodId: 648bae59b7b670f1a3a09661
+              quantity: 5
+              unitPrice: 2150
+              totalPrice: 10750
           withNoStock:
-            prodId: 648e28db81adab7472707ad4
-            quantity: 2000
-            actualStock: 14
+            - prodId: 648e28db81adab7472707ad4
+              quantity: 2000
+              actualStock: 14
         ticket:
           amount: 10750
           purchaser: romina.jalon@gmail.com

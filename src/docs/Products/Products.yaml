@@ -1,7 +1,282 @@
 paths:
+  /api/products:
+    get:
+      summary: Get all products. User must be login. You must be logged in as a user.
+      security:
+        - cookieAuth: []
+      tags:
+        - Products
+      responses:
+        '200':
+          description: All Products handlebar view successfully generated
+          content:
+            text/html:
+              example: |
+                <html lang="en">
+                  <head>
+                    <meta charset="UTF-8" />
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <link rel="stylesheet" href="/main.css" />
+                    <title>Document</title>
+                  </head>
+                  <body>
+                    <div id="modal-overlay" class="modal-overlay">
+                      <div id="spinner" class="spinner"></div>
+                    </div>
+                    <div><strong>WELCOME!</strong><a href='/logout' style="float: right;">LOGOUT</a></div>
+                    {{#if profile.isAdmin}}
+                      <div>Rol: ADMIN</div>
+                    {{else}}
+                      {{#if profile.isPremium}}
+                        <div>Rol: PREMIUM</div>
+                      {{else}}
+                        <div>Rol: USER</div>
+                      {{/if}}
+                    {{/if}}
+                    <div>First Name: {{profile.firstName}}</div>
+                    <div>Last Name: {{profile.lastName}}</div>
+                    <div>Email: {{profile.email}}</div>
+                    <br>
+                    <p><button id="cartBtn">CART</button></p>
+                    {{#if profile.isAdmin }}
+                      <p><a href='/api/products/create' style="float: right;">CREATE PRODUCT</a></p>
+                    {{else}}
+                      {{#if profile.isPremium }}
+                        <p><a href='/api/products/create' style="float: right;">CREATE PRODUCT</a></p>
+                      {{/if}}
+                    {{/if}}
+                    {{#if profile.isAdmin}}
+                      <p><a href='/api/users' style="float: right;">MANAGE USERS</a></p>
+                    {{/if}}
+                    <div>
+                      <strong>Products</strong>
+                      <ol class="alternating-colors">
+                        {{#each payload}}
+                        <li>
+                          <strong>{{this.title}}</strong>
+                          <p>id: {{this.id}}</p>
+                          <p>{{this.description}}</p>
+                          <p>Code: {{this.code}}</p>
+                          <p>Price: {{this.price}}</p>
+                          <p>Stock: {{this.stock}}</p>
+                          <button id="{{this.id}}" class="addCartBtn">Add to Cart</button>
+                          {{#if ../profile.isAdmin}}
+                            <p class="prodOwner">
+                              <button id="{{this.id}}" class="deleteBtn">DELETE Product</button>
+                              Product Owner: {{this.owner}}</p>
+                          {{else}}
+                            {{#if ../profile.isPremium}}
+                              <p class="prodOwner">
+                              <button id="{{this.id}}" class="deleteBtn">DELETE Product</button>
+                              Product Owner: {{this.owner}}</p>
+                                {{/if}}
+                            {{/if}}
+                            <br>
+                        </li>
+                        {{/each}}
+                      </ol>
+                      <p>
+                        {{#if hasPrevPage}}
+                          <a href='/api/products?page={{prevPage}}'>Prev Page</a>
+                        {{/if}}
+                        {{#if pagingCounter}}
+                          pagingCounter: {{pagingCounter}}
+                        {{/if}}
+                        {{#if totalDocs}}
+                          totalDocs: {{totalDocs}}
+                        {{/if}}
+                        {{#if totalPages}}
+                          totalPages: {{totalPages}}
+                        {{/if}}
+                        {{#if hasNextPage}}
+                          <a href='/api/products?page={{nextPage}}'>Next Page</a>
+                        {{/if}}
+                      </p>
+                    </div>
+                    <script src="../js/products.js"></script>
+                  </body>
+                </html>
+        '400':
+          description: Error usually when there are no user logged in as Admin or Owner role
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/ProdError'
+    post:
+      summary: Create a Product. You must be logged in as Premiun or Admin user.
+      security:
+        - cookieAuth: []
+      tags:
+        - Products
+      requestBody:
+        description: Product should be indicated on Body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: product title
+                description:
+                  type: string
+                  description: product description
+                code:
+                  type: string
+                  description: product code
+                price:
+                  type: string
+                  description: product price
+                stock:
+                  type: string
+                  description: product stock
+                category:
+                  type: string
+                  description: product category
+              example:
+                title: 'Product DR'
+                description: 'Desc Prod U'
+                code: 'DR2020'
+                price: 95
+                stock: 100
+                category: 'SX'
+      responses:
+        '200':
+          description: Create Product successfully generated, redirect to Products page (api/products GET)
+        '400':
+          description: Error usually when there are no user logged in as Admin or Owner role or when product already exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/ProdError'
+  /api/products/create:
+    get:
+      summary: Get Form to create a Product. You must be logged in as Premiun or Admin user.
+      security:
+        - cookieAuth: []
+      tags:
+        - Products
+      responses:
+        '200':
+          description: Create Product Form handlebar view successfully generated
+          content:
+            text/html:
+              example: |
+                <html lang="en">
+                  <head>
+                    <meta charset="UTF-8" />
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <link rel="stylesheet" href="/main.css" />
+                    <title>Document</title>
+                  </head>
+                  <body>
+                    <a href='/api/products' style="float: right;">GO BACK</a>
+                    <form action='/api/products' method='POST'>
+                      <p><input id='title' name='title' type='text' placeholder='title' /></p>
+                      <p><input id='description' name='description' type='text' placeholder='description' /></p>
+                      <p><input id='code' name='code' type='text' placeholder='code' /></p>
+                      <p><input id='price' name='price' type='number' placeholder='price' /></p>
+                      <p><input id='stock' name='stock' type='number' placeholder='stock' /></p>
+                      <p><input id='category' name='category' type='text' placeholder='category' /></p>
+                      <p><input type='submit' value='CREATE' /></p>
+                    </form>
+                  </body>
+                </html>
+        '400':
+          description: Error usually when there are no user logged in as Admin or Owner role
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/ProdError'
   /api/products/{pid}:
+    get:
+      summary: Get an specific product id. You must be logged in as user.
+      security:
+        - cookieAuth: []
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: product ID to get
+          schema:
+            $type: String
+      responses:
+        '200':
+          description: The product was succesfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Estado de la respuesta ("success").
+                  msg:
+                    type: string
+                    description: Mensaje descriptivo ("product list").
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        description: ID del producto.
+                      title:
+                        type: string
+                        description: Título del producto.
+                      description:
+                        type: string
+                        description: Descripción del producto.
+                      code:
+                        type: string
+                        description: Código del producto.
+                      price:
+                        type: number
+                        description: Precio del producto.
+                      stock:
+                        type: integer
+                        description: Cantidad en stock.
+                      category:
+                        type: string
+                        description: Categoría del producto.
+                      status:
+                        type: boolean
+                        description: Estado del producto.
+                      owner:
+                        type: string
+                        description: Propietario del producto.
+                      __v:
+                        type: integer
+                        description: Versión del documento.
+              examples:
+                example1:
+                  summary: Ejemplo de respuesta
+                  value:
+                    status: 'success'
+                    msg: 'product list'
+                    data:
+                      _id: '651caa3dce690979ed3369eb'
+                      title: 'Bespoke Fresh Keyboard'
+                      description: 'The Football Is Good For Training And Recreational Purposes'
+                      code: 'iusto'
+                      price: 800
+                      stock: 70
+                      category: 'Grocery'
+                      status: true
+                      owner: 'admin'
+                      __v: 0
+        '400':
+          description: Error usually when there are no user logged
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/ProdError'
     put:
-      summary: Update an specific product id
+      summary: Update an specific product id. You must be logged in as Premiun or Admin user.
       security:
         - cookieAuth: []
       tags:
@@ -41,9 +316,9 @@ paths:
                   title: Product A
                   description: Lorem Ipsum desc
                   code: AC
-                  price": 34999
-                  stock": 20
-                  category": CA
+                  price: 34999
+                  stock: 20
+                  category: CA
       responses:
         '200':
           description: The product was succesfully updated
@@ -60,7 +335,7 @@ paths:
               schema:
                 $ref: '#components/schemas/ProdError'
     delete:
-      summary: Delete an specific product id
+      summary: Delete an specific product id. You must be logged in as Premiun or Admin user.
       security:
         - cookieAuth: []
       tags:
@@ -87,7 +362,7 @@ paths:
             application/json:
               schema:
                 $ref: '#components/schemas/ProdError'
-  /api/products/mockingproducts:
+  /api/products/faker/mockingproducts:
     get:
       summary: Generate faker products
       tags:
@@ -108,6 +383,92 @@ paths:
                       $ref: '#components/schemas/Product'
         '400':
           description: Error usually when there are no user logged in as Admin or Owner role
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/ProdError'
+  /api/products/manyProducts:
+    post:
+      summary: Create many Products. You can consume /api/products/mockingproducts to have a list of products quickly. You must be logged in as Premiun or Admin user.
+      security:
+        - cookieAuth: []
+      tags:
+        - Products
+      requestBody:
+        description: Products should be indicated on Body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    description: Título del producto.
+                  description:
+                    type: string
+                    description: Descripción del producto.
+                  code:
+                    type: string
+                    description: Código del producto.
+                  price:
+                    type: string
+                    description: Precio del producto.
+                  stock:
+                    type: string
+                    description: Cantidad en stock.
+                  category:
+                    type: string
+                    description: Categoría del producto.
+                  status:
+                    type: boolean
+                    description: Estado del producto
+      examples:
+        example1:
+          summary: Ejemplo de solicitud
+          value:
+            - title: 'Rustic Rubber Fish'
+              description: 'New ABC 13 9370, 13.3, 5th Gen CoreA5-8250U, 8GB RAM, 256GB SSD, power UHD Graphics, OS 10 Home, OS Office A & J 2016'
+              code: 'harum'
+              price: '60.00'
+              stock: '40'
+              category: 'Home'
+              status: true
+            - title: 'Generic Bronze Computer'
+              description: 'New range of formal shirts are designed keeping you in mind. With fits and styling that will make you stand apart'
+              code: 'iusto'
+              price: '679.00'
+              stock: '75'
+              category: 'Outdoors'
+              status: true
+      responses:
+        '200':
+          description: Respuesta exitosa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Estado de la respuesta ("success").
+                  msg:
+                    type: string
+                    description: Mensaje descriptivo ("products created").
+                  data:
+                    type: string
+                    description: Mensaje adicional con enlace.
+                examples:
+                  example1:
+                    summary: Ejemplo de respuesta
+                    value:
+                      status: 'success'
+                      msg: 'products created'
+                      data: 'check http://localhost:8080/api/products'
+        '400':
+          description: Error usually when there are no user logged in as Admin or Owner role or when product already exist.
           content:
             application/json:
               schema:

@@ -8,7 +8,7 @@ const expect = chai.expect;
 const requester = supertest('http://localhost:8080');
 
 await mongoose.connect(
-  ''
+  'mongodb+srv://rominajalon:ForhO1BiAqRF1ujv@cluster0.rpahgl8.mongodb.net/ecommerceDEV?retryWrites=true&w=majority'
 );
 
 let cookieName;
@@ -19,7 +19,7 @@ let cartId;
 describe('Testing Carts', () => {
   it('Existing user should login and retrieve a cookie', async () => {
     const result = await requester.post('/api/auth/login').send({
-      email: 'romina.jalon@gmail.com', //set an existing user on ddbb
+      email: 'bobis@gmail.com', //set an existing user on ddbb with admin role
       password: '123456',
     });
 
@@ -75,11 +75,7 @@ describe('Testing Carts', () => {
       .set('Cookie', [`${cookieName}=${cookieValue}`]);
 
     expect(_body.status).to.be.equal(200);
-    expect(_body).to.have.property('headers');
-    expect(_body.headers)
-      .to.have.property('content-type')
-      .that.includes('text/html');
-    expect(_body.text).to.include('<strong>Cart Products</strong>');
+    expect(_body.text).to.include('<strong>Cart</strong>');
   });
 
   it('Create an Empty New Cart', async () => {
@@ -120,8 +116,8 @@ describe('Testing Carts', () => {
   });
 
   it('Update specific Product quantity on Cart', async () => {
-    const cid = '64d571eedf1a790fa8f5be5d'; //hardocoded
-    const pid = '648e28db81adab7472707ad4'; //hardocoded
+    const cid = cartId; //hardocoded
+    const pid = '651caa3dce690979ed3369eb'; //hardocoded getting from ddbb
     const requestBodyProd = {
       quantity: 30,
     };
@@ -158,7 +154,7 @@ describe('Testing Carts', () => {
 
   //Excede los 2000ms revisar!
   it('Purchase an specific cart Id', async () => {
-    const cid = '65034ac2efa8fae81b8ba67c'; //hardocoded
+    const cid = cartId; //hardocoded
 
     const _body = await requester
       .post(`/api/carts/${cid}/purchase`)

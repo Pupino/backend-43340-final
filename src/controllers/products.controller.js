@@ -106,7 +106,6 @@ class ProductController {
       //   data: newProduct,
       // });
     } catch (e) {
-      logger.error(`ProductController.postProduct: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Create Product',
         cause: e.cause,
@@ -135,7 +134,7 @@ class ProductController {
         }
       }
       return res.status(200).json({
-        status: 'success MENTIRA!',
+        status: 'success',
         msg: 'products created',
         data: 'check http://localhost:8080/api/products',
       });

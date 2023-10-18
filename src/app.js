@@ -37,7 +37,8 @@ const specs = swaggerJSDoc({
     openapi: '3.0.1',
     info: {
       title: 'Backend CoderHouse Deliverable',
-      description: 'The Project is about an e-commerce demo',
+      description:
+        'The Project is about an e-commerce demo. <br><br> To test apis is needed to set up a cookieAuth (apiKey) on Authorize button, you can get the cookie connect.sid value after login on app going to browser Develope Tools > Application > Storage > Cookies.',
       version: 1.0,
     },
   },

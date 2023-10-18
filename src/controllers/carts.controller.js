@@ -47,6 +47,7 @@ class CartsController {
           id: product.prodId._id,
           title: product.prodId.title,
           price: product.prodId.price,
+          stock: product.prodId.stock,
           quantity: product.quantity,
         })),
         cartId: cid,

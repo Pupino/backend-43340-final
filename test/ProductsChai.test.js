@@ -8,7 +8,7 @@ const expect = chai.expect;
 const requester = supertest('http://localhost:8080');
 
 await mongoose.connect(
-  ''
+  'mongodb+srv://rominajalon:ForhO1BiAqRF1ujv@cluster0.rpahgl8.mongodb.net/ecommerceDEV?retryWrites=true&w=majority'
 );
 
 let cookieName;
@@ -19,7 +19,7 @@ let productId;
 describe('Testing Products', () => {
   it('Exist user should login and retrieve a cookie', async () => {
     const result = await requester.post('/api/auth/login').send({
-      email: 'romina.jalon@gmail.com', //set an existing user on ddbb
+      email: 'bobis@gmail.com', //set an existing user on ddbb with admin role
       password: '123456',
     });
 
@@ -108,9 +108,8 @@ describe('Testing Products', () => {
       .post('/api/products')
       .set('Cookie', [`${cookieName}=${cookieValue}`])
       .send(requestBodyMockProd);
-
-    expect(_body.status).to.be.equal(200);
-    expect(_body.text).to.include('product created');
+    expect(_body.status).to.be.equal(302);
+    expect(_body.text).to.include('/api/products');
   });
 
   it('Update a Product by ID', async () => {

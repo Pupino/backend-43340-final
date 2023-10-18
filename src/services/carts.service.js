@@ -38,6 +38,9 @@ class CartService {
     try {
       //returns products array belong to cart id
       const products = await cartsModel.getProductsByCartId(id);
+      logger.debug(
+        `service getProductsByCartId line 41: ${JSON.stringify(products)}`
+      );
       return products;
     } catch (e) {
       throw e;

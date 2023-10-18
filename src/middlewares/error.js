@@ -49,11 +49,11 @@ export default (error, req, res, next) => {
       });
       break;
     case EErros.CREATE_PRODUCT_ERROR:
-      logger.error(`Error: ${error} - Cause: ${error.cause}`);
+      logger.error(`error.code: ${error.code} - ${error}`);
       res.status(400).send({
         status: 'error',
         error: error.name,
-        cause: error.cause,
+        cause: error.message,
         errorBackend: error,
       });
       break;
