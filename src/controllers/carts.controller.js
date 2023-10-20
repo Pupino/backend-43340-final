@@ -24,7 +24,6 @@ class CartsController {
         data: carts,
       });
     } catch (e) {
-      logger.error(`CartsController.getAll: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Get all carts error',
         cause: 'Contact Development team',
@@ -53,7 +52,6 @@ class CartsController {
         cartId: cid,
       });
     } catch (e) {
-      logger.error(`CartsController.getById: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Get cart by id error',
         cause: 'Contact Development team',
@@ -89,9 +87,6 @@ class CartsController {
         data: cart,
       });
     } catch (e) {
-      logger.error(
-        `CartsController.createEmptyCart: ${JSON.stringify(e.cause)}`
-      );
       CustomError.createError({
         name: 'Create empty cart error',
         cause: 'Contact Development team',
@@ -115,9 +110,6 @@ class CartsController {
         data: updateProdsOnCart,
       });
     } catch (e) {
-      logger.error(
-        `CartsController.updateProductsCart: ${JSON.stringify(e.cause)}`
-      );
       CustomError.createError({
         name: 'Update products on cart error',
         cause: 'Contact Development team',
@@ -143,9 +135,6 @@ class CartsController {
         data: updatedCart,
       });
     } catch (e) {
-      logger.error(
-        `CartsController.updateProdQtyOnCart: ${JSON.stringify(e.cause)}`
-      );
       CustomError.createError({
         name: 'Update product quantity on cart error',
         cause: 'Contact Development team',
@@ -166,9 +155,6 @@ class CartsController {
         data: deleteProdFromCart,
       });
     } catch (e) {
-      logger.error(
-        `CartsController.removeProdFromCart: ${JSON.stringify(e.cause)}`
-      );
       CustomError.createError({
         name: 'Remove product from cart error',
         cause: 'Contact Development team',
@@ -188,7 +174,6 @@ class CartsController {
         data: deleteAllProds,
       });
     } catch (e) {
-      logger.error(`CartsController.cleanCart: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Removing all products from cart error',
         cause: 'Contact Development team',
@@ -316,7 +301,6 @@ class CartsController {
         });
       }
     } catch (e) {
-      logger.error(`CartsController.purchase: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Purchasing cart error',
         cause: 'Contact Development team',

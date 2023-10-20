@@ -25,6 +25,7 @@ export default class UsersModel {
 
   async getUsers() {
     try {
+      console.log(`Linea 28 getUsers`);
       const users = await UserModel.find({}, { __v: false }).select(
         '_id email -password firstName lastName -age isAdmin isPremium lastConnection'
       );

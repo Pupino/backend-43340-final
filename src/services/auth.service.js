@@ -36,7 +36,7 @@ class AuthService {
     let rta = {
       status: 500,
       render: 'error-page',
-      msg: 'fail to register',
+      msg: 'Fail to Register. Contact Site Administrator.',
     };
     return rta;
   }

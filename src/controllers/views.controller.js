@@ -13,7 +13,6 @@ class ViewsController {
       //3-Responde al usuario final
       return res.render(home);
     } catch (e) {
-      logger.error(`ViewsController.home: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Home error',
         cause: 'Please contact development team',
@@ -53,7 +52,6 @@ class ViewsController {
           .render(logoutRta.render, logoutRta.msg);
       });
     } catch (e) {
-      logger.error(`ViewsController.logout: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Logout error',
         cause: 'Please contact development team',

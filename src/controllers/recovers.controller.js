@@ -13,9 +13,6 @@ class RecoverController {
       //3-Responde al usuario final
       res.render('check-email');
     } catch (e) {
-      logger.error(
-        `RecoverController.createCodeFromEmail: ${JSON.stringify(e.cause)}`
-      );
       CustomError.createError({
         name: 'Create Code from Email to reset password error',
         cause: 'Contact Development team',
@@ -36,7 +33,6 @@ class RecoverController {
       logger.debug(`rta en controller: ${JSON.stringify(rta)}`);
       res.render(rta.view, { msg: rta.msg, email: rta.email, code: rta.code });
     } catch (e) {
-      logger.error(`RecoverController.recoverPass: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Recover password error',
         cause: 'Contact Development team',
@@ -56,7 +52,6 @@ class RecoverController {
       logger.debug(`rta en controller: ${JSON.stringify(rta)}`);
       res.render(rta.view, { msg: rta.msg, email: rta.email, code: rta.code });
     } catch (e) {
-      logger.error(`RecoverController.saveNewPass: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Saving New password error',
         cause: 'Contact Development team',

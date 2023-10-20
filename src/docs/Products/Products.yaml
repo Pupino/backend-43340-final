@@ -344,7 +344,7 @@ paths:
         - name: pid
           in: path
           required: true
-          description: product ID to be updated
+          description: product ID to be deleted
           schema:
             $type: String
       responses:

@@ -1,0 +1,465 @@
+paths:
+  /api/users:
+    get:
+      summary: Get all users. User must be login. You must be logged in as Admin user.
+      security:
+        - cookieAuth: []
+      tags:
+        - Users
+      responses:
+        '200':
+          description: User list view
+          content:
+            text/html:
+              example: |
+                <html lang="en">
+                  <head>
+                    <meta charset="UTF-8" />
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <link rel="stylesheet" href="/main.css" />
+                    <title>Document</title>
+                  </head>
+                  <body>
+                    <div>
+                        <strong>Users</strong><a href='/api/products' style="float: right;">GO BACK</a>
+                        <ol class="alternating-colors">
+                            {{log this}}
+                            {{#each payload}}
+                                <li>
+                                    <strong>{{this.email}}</strong>
+                                    <p>Name: {{this.firstName}}</p>
+                                    <p>Last Name: {{this.lastName}}</p>
+                                    <p>Admin: {{this.isAdmin}}</p>
+                                    <p>Premium: {{this.isPremium}}</p>
+                                    <p>Last Connection: {{this.lastConnection}}</p>
+                                    {{!-- <a href="/api/users/{{this.id}}">Edit</a> --}}
+                                    <button id="{{this.id}}" class="userBtn">EDIT</button>
+                                </li>
+                            {{/each}}
+                        </ol>
+                    </div>
+                    <script src="../js/users.js"></script>
+                  </body>
+                </html>
+        '400':
+          description: Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/GenericError'
+  /api/users/{uid}:
+    get:
+      summary: Get an specific user. User must be login. You must be logged in as Admin user.
+      security:
+        - cookieAuth: []
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: user ID to get
+          schema:
+            $type: String
+      responses:
+        '200':
+          description: User view
+          content:
+            text/html:
+              example: |
+                <html lang="en">
+                  <head>
+                    <meta charset="UTF-8" />
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <link rel="stylesheet" href="/main.css" />
+                    <title>Document</title>
+                  </head>
+                  <body>
+                    <div>
+                        <strong>Users</strong><a href='/api/products' style="float: right;">GO BACK</a>
+                        <ol class="alternating-colors">
+                            {{log this}}
+                            {{#each payload}}
+                                <li>
+                                    <strong>{{this.email}}</strong>
+                                    <p>Name: {{this.firstName}}</p>
+                                    <p>Last Name: {{this.lastName}}</p>
+                                    <p>Admin: {{this.isAdmin}}</p>
+                                    <p>Premium: {{this.isPremium}}</p>
+                                    <p>Last Connection: {{this.lastConnection}}</p>
+                                    {{!-- <a href="/api/users/{{this.id}}">Edit</a> --}}
+                                    <button id="{{this.id}}" class="userBtn">EDIT</button>
+                                </li>
+                            {{/each}}
+                        </ol>
+                    </div>
+                    <script src="../js/users.js"></script>
+                  </body>
+                </html>
+        '400':
+          description: Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/GenericError'
+    delete:
+      summary: Delete an specific user id. You must be logged in as Admin user.
+      security:
+        - cookieAuth: []
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: User ID to be deleted
+          schema:
+            $type: String
+      responses:
+        '200':
+          description: The user was succesfully deleted
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/UserDeleted'
+        '400':
+          description: Error usually when there are no user logged in as Admin or Owner role
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/GenericError'
+  /api/users/premium/{uid}:
+    put:
+      summary: Set an specific user with Premium role. User must be login and as Admin user.
+      security:
+        - cookieAuth: []
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: user ID to set
+          schema:
+            $type: String
+      responses:
+        '200':
+          description: The user was succesfully set as Premium
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Status Message.
+                  msg:
+                    type: string
+                    description: Status Description.
+                  payload:
+                    type: string
+                    description: Empty
+                example:
+                  status: 'success'
+                  msg: 'user id xxxxx set as Premium'
+                  payload: '{}'
+        '400':
+          description: Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/GenericError'
+  /api/users/premiumSwitch/{uid}:
+    put:
+      summary: Switch (on/off) premium role to an specific user. User must be login and as Admin user.
+      security:
+        - cookieAuth: []
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: user ID to switch
+          schema:
+            $type: String
+      responses:
+        '200':
+          description: The user was succesfully Premium switched
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado (200).
+                  render:
+                    type: string
+                    description: Nombre del render.
+                  user:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        description: ID del usuario.
+                      email:
+                        type: string
+                        description: Correo electrónico del usuario.
+                      password:
+                        type: string
+                        description: Contraseña del usuario (hashed).
+                      firstName:
+                        type: string
+                        description: Nombre del usuario.
+                      lastName:
+                        type: string
+                        description: Apellido del usuario.
+                      age:
+                        type: integer
+                        description: Edad del usuario.
+                      isAdmin:
+                        type: boolean
+                        description: Si el usuario es administrador.
+                      isPremium:
+                        type: boolean
+                        description: Si el usuario es premium.
+                      __v:
+                        type: integer
+                        description: Versión del documento.
+                      lastConnection:
+                        type: string
+                        description: Fecha y hora de la última conexión.
+                example:
+                  summary: Response example
+                  value:
+                    status: 200
+                    render: 'user'
+                    user:
+                      _id: '652feba26c00c419244d4474'
+                      email: 'roman@gmail.com'
+                      password: '$2b$10$pqYM/4Z9zDar0gNhOsCMueXMeHlnbUba6h/Kj076VlS2e1AjWt0Ja'
+                      firstName: 'Roman'
+                      lastName: 'Riquelme'
+                      age: 43
+                      isAdmin: true
+                      isPremium: true
+                      __v: 0
+                      lastConnection: '2023-10-18T16:35:05.461Z'
+        '400':
+          description: Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/GenericError'
+  /api/users/tool/cleanUsers:
+    get:
+      summary: Clean all users with inactivity for 2 days or more. User must be logged in as Admin user to do that action.
+      security:
+        - cookieAuth: []
+      tags:
+        - Users
+      responses:
+        '200':
+          description: The users was succesfully removed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Status Message.
+                  msg:
+                    type: string
+                    description: Status Description.
+                  payload:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          description: ID del usuario.
+                        email:
+                          type: string
+                          description: Correo electrónico del usuario.
+                        password:
+                          type: string
+                          description: Contraseña del usuario (hashed).
+                        firstName:
+                          type: string
+                          description: Nombre del usuario.
+                        lastName:
+                          type: string
+                          description: Apellido del usuario.
+                        age:
+                          type: integer
+                          description: Edad del usuario.
+                        isAdmin:
+                          type: boolean
+                          description: Si el usuario es administrador.
+                        isPremium:
+                          type: boolean
+                          description: Si el usuario es premium.
+                        __v:
+                          type: integer
+                          description: Versión del documento.
+                        lastConnection:
+                          type: string
+                          description: Fecha y hora de la última conexión.
+                example:
+                  summary: Ejemplo de respuesta
+                  value:
+                    status: 'success'
+                    msg: 'Cleaning Done! List of deleted users on payload'
+                    payload:
+                      - _id: '6531a0c851a2505b9fff6cbd'
+                        email: 'roman@boca.com'
+                        password: '$2b$10$rODSh5GhvLsw2zqznYp//uQN4U7SuixyODKkCSkUaw5Or84zvRUs2'
+                        firstName: 'Roman'
+                        lastName: 'Riquelme'
+                        age: 41
+                        isAdmin: false
+                        isPremium: false
+                        __v: 0
+                        lastConnection: '2023-08-19T21:34:03.826Z'
+        '400':
+          description: Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/GenericError'
+  /api/users/tool/generateUsers:
+    get:
+      summary: Generate faker users
+      tags:
+        - Users
+      responses:
+        '200':
+          description: The users was succesfully removed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Estado de la respuesta ("success").
+                  payload:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: Nombre del usuario.
+                        last_name:
+                          type: string
+                          description: Apellido del usuario.
+                        birthDate:
+                          type: string
+                          description: Fecha de nacimiento.
+                        email:
+                          type: string
+                          description: Correo electrónico del usuario.
+                        phone:
+                          type: string
+                          description: Número de teléfono del usuario.
+                        sex:
+                          type: string
+                          description: Género del usuario.
+                        products:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              title:
+                                type: string
+                                description: Título del producto.
+                              description:
+                                type: string
+                                description: Descripción del producto.
+                              code:
+                                type: string
+                                description: Código del producto.
+                              price:
+                                type: string
+                                description: Precio del producto.
+                              stock:
+                                type: string
+                                description: Cantidad en stock.
+                              category:
+                                type: string
+                                description: Categoría del producto.
+                              status:
+                                type: boolean
+                                description: Estado del producto.
+                example:
+                  summary: Ejemplo de respuesta
+                  value:
+                    status: 'success'
+                    payload:
+                      - name: 'Pascale'
+                        last_name: 'Klocko'
+                        birthDate: '1954-06-18T20:06:36.574Z'
+                        email: 'Pierre_Bogan@yahoo.com'
+                        phone: '1-219-481-2928'
+                        sex: 'male'
+                        products:
+                          - title: 'Handcrafted Steel Fish'
+                            description: 'Ergonomic executive chair upholstered in bonded black leather and PVC padded seat and back for all-day comfort and support'
+                            code: 'autem'
+                            price: '74.00'
+                            stock: '51'
+                            category: 'Automotive'
+                            status: false
+components:
+  schemas:
+    GenericError:
+      type: object
+      properties:
+        status:
+          type: string
+        error:
+          type: string
+        cause:
+          type: string
+        errorBackend:
+          type: object
+          properties:
+            name:
+              type: string
+            code:
+              type: integer
+      example:
+        status: error
+        error: xxxxx xxxxxx xxxxxx error
+        cause: Contact Development team
+        errorBackend:
+          name": xxxxx xxxxxx xxxxx error
+          code: 11
+    UserDeleted:
+      type: object
+      properties:
+        status:
+          type: string
+        msg:
+          type: string
+        payload:
+          type: object
+      example:
+        status: success
+        msg: user deleted
+        payload: {}
+  # 1) Define the cookie name
+  # Note for Swagger UI and Swagger Editor users: Cookie authentication is currently not supported for "try it out" requests due to browser security restrictions. See this issue for more information. SwaggerHub does not have this limitation.
+  securitySchemes:
+    cookieAuth: # arbitrary name for the security scheme; will be used in the "security" key later
+      type: apiKey
+      in: cookie
+      name: connect.sid # cookie name

@@ -14,7 +14,6 @@ class AuthController {
       //3-Responde al usuario final
       return res.send(authSession);
     } catch (e) {
-      logger.error(`AuthController.getSession: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Get Session Error',
         cause: 'Please contact development team',
@@ -31,7 +30,6 @@ class AuthController {
       const register = authService.getRegister();
       return res.render(register, {});
     } catch (e) {
-      logger.error(`AuthController.getRegister: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Get Register Error',
         cause: 'Please contact development team',
@@ -56,7 +54,6 @@ class AuthController {
         return res.redirect('/api/products');
       }
     } catch (e) {
-      logger.error(`AuthController.postRegister: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Post Register Error',
         cause: 'Please contact development team',
@@ -74,9 +71,8 @@ class AuthController {
       //3-Responde al usuario final
       return res
         .status(failRegisterRta.status)
-        .render(failRegisterRta.render, failRegisterRta.msg);
+        .render(failRegisterRta.render, { msg: failRegisterRta.msg });
     } catch (e) {
-      logger.error(`AuthController.failRegister: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Fail Register Error',
         cause: 'Please contact development team',
@@ -96,7 +92,6 @@ class AuthController {
         .status(loginFormRta.status)
         .render(loginFormRta.render, loginFormRta.msg);
     } catch (e) {
-      logger.error(`AuthController.loginForm: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Fail login form',
         cause: 'Please contact development team',
@@ -122,7 +117,6 @@ class AuthController {
         return res.redirect(loginRta.redirect);
       }
     } catch (e) {
-      logger.error(`AuthController.login: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Login error',
         cause: 'Please contact development team',
@@ -140,9 +134,8 @@ class AuthController {
       //3-Responde al usuario final
       return res
         .status(failLoginRta.status)
-        .render(failLoginRta.render, failLoginRta.msg);
+        .render(failLoginRta.render, { msg: failLoginRta.msg });
     } catch (e) {
-      logger.error(`AuthController.failLogin: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Fail login Error',
         cause: 'Please contact development team',
@@ -163,13 +156,12 @@ class AuthController {
         if (logoutRta.status === 500) {
           return res
             .status(logoutRta.status)
-            .render(logoutRta.render, logoutRta.msg);
+            .render(logoutRta.render, { msg: logoutRta.msg });
         } else {
           return res.redirect(logoutRta.redirect);
         }
       });
     } catch (e) {
-      logger.error(`AuthController.logout: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Logout Error',
         cause: 'Please contact development team',
@@ -188,7 +180,6 @@ class AuthController {
       //3-Responde al usuario final
       return res.render(getPerfilRta.render, { user: getPerfilRta.user });
     } catch (e) {
-      logger.error(`AuthController.getPerfil: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Get perfil error',
         cause: 'Please contact development team',
@@ -205,9 +196,6 @@ class AuthController {
       const getAdminRta = authService.getAdministracion();
       return res.send(getAdminRta.msg);
     } catch (e) {
-      logger.error(
-        `AuthController.getAdministracion: ${JSON.stringify(e.cause)}`
-      );
       CustomError.createError({
         name: 'Get administration error',
         cause: 'Please contact development team',

@@ -11,9 +11,6 @@ class ChatSocketController {
       //3-Responde al usuario final
       return res.render(chatSocket);
     } catch (e) {
-      logger.error(
-        `ChatSocketController.getChatSocket: ${JSON.stringify(e.cause)}`
-      );
       CustomError.createError({
         name: 'Get chat socket error',
         cause: 'Contact Development team',

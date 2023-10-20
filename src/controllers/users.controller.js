@@ -22,9 +22,8 @@ class UserController {
         })),
       });
     } catch (e) {
-      logger.error(`UserController.getUsers: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
-        name: 'Home error',
+        name: 'get users error',
         cause: 'Please contact development team',
         message: e,
         code: EErros.GET_USERS_ERROR,
@@ -35,7 +34,9 @@ class UserController {
   async getUserById(req, res) {
     try {
       const userId = req.params.uid;
+      console.log(`Linea 37 userId: ${userId}`);
       const userById = await userService.getUserById(userId);
+      console.log(`Linea 38 userById: ${JSON.stringify(userById)}`);
       //romina devolver vista para permitir editar y eliminar usuario
       const userFormatted = {
         id: userById.user._id,
@@ -58,7 +59,6 @@ class UserController {
       //   payload: { userById },
       // });
     } catch (e) {
-      logger.error(`UserController.getUserById: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Get User by Id',
         cause: 'Please contact development team',
@@ -88,7 +88,6 @@ class UserController {
         });
       }
     } catch (e) {
-      logger.error(`UserController.update: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Update User',
         cause: 'Please contact development team',
@@ -116,7 +115,6 @@ class UserController {
         });
       }
     } catch (e) {
-      logger.error(`UserController.deleteUser: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Delete User',
         cause: 'Please contact development team',
@@ -131,7 +129,6 @@ class UserController {
       const user = await userService.authenticateUser(email, password);
       return user;
     } catch (e) {
-      logger.error(`UserController.loginUser: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Login User',
         cause: 'Please contact development team',
@@ -156,7 +153,6 @@ class UserController {
       );
       return userCreated;
     } catch (e) {
-      logger.error(`UserController.registerUser: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Register User',
         cause: 'Please contact development team',
@@ -174,7 +170,6 @@ class UserController {
       req.session.user.isPremium = user.isPremium;
       res.status(200).json(user);
     } catch (e) {
-      logger.error(`UserController.premiumSwitch: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Switch User to Premium',
         cause: 'Please contact development team',
@@ -194,7 +189,6 @@ class UserController {
         payload: {},
       });
     } catch (e) {
-      logger.error(`UserController.setPremium: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Set User to Premium',
         cause: 'Please contact development team',
@@ -206,6 +200,7 @@ class UserController {
 
   async cleanUsers(req, res) {
     try {
+      console.log(`Linea 203 cleanUsers`);
       const usersCleaned = await userService.cleanUsers();
       return res.status(200).json({
         status: 'success',
@@ -213,7 +208,6 @@ class UserController {
         payload: usersCleaned,
       });
     } catch (e) {
-      logger.error(`UserController.cleanUsers: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'Clean Users',
         cause: 'Please contact development team',

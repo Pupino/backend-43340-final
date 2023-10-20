@@ -15,9 +15,6 @@ class SessionsController {
       // Successful authentication, redirect home.
       res.redirect(callbackRta.redirect);
     } catch (e) {
-      logger.error(
-        `SessionsController.getGitHubCallback: ${JSON.stringify(e.cause)}`
-      );
       CustomError.createError({
         name: 'GitHub Authentication',
         cause: 'Please contact development team',
@@ -37,9 +34,6 @@ class SessionsController {
       const userRta = new userRtaDTO(req.session);
       return res.send(JSON.stringify(userRta));
     } catch (e) {
-      logger.error(
-        `SessionsController.getCurrentSession: ${JSON.stringify(e.cause)}`
-      );
       CustomError.createError({
         name: 'Current Session Error',
         cause: 'Please contact development team',

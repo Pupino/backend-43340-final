@@ -54,7 +54,6 @@ class ProductController {
         profile: req.session.user,
       });
     } catch (e) {
-      logger.error(`ProductController.getProducts: ${JSON.stringify(e.cause)}`);
       CustomError.createError({
         name: 'getProducts error',
         cause: 'Contact Development team',
@@ -74,9 +73,6 @@ class ProductController {
         data: product,
       });
     } catch (e) {
-      logger.error(
-        `ProductController.getProductById: ${JSON.stringify(e.cause)}`
-      );
       CustomError.createError({
         name: 'Get Product by ID error',
         cause: 'Contact Development team',
@@ -139,9 +135,6 @@ class ProductController {
         data: 'check http://localhost:8080/api/products',
       });
     } catch (e) {
-      logger.error(
-        `ProductController.postManyProduct: ${JSON.stringify(e.cause)}`
-      );
       CustomError.createError({
         name: 'Create Product',
         cause: e.cause,
@@ -180,9 +173,6 @@ class ProductController {
       if (e.code === EErros.PRODUCT_UPDATE_VALIDATION_ERROR) {
         throw e;
       } else {
-        logger.error(
-          `ProductController.updateProduct: ${JSON.stringify(e.cause)}`
-        );
         CustomError.createError({
           name: 'Update Product error',
           cause: 'Contact Development team',
@@ -215,9 +205,6 @@ class ProductController {
       if (e.code === EErros.PRODUCT_DELETE_VALIDATION_ERROR) {
         throw e;
       } else {
-        logger.error(
-          `ProductController.deleteProduct: ${JSON.stringify(e.cause)}`
-        );
         CustomError.createError({
           name: 'Delete product error',
           cause: 'Contact Development team',
@@ -238,9 +225,6 @@ class ProductController {
         .status(createProd.status)
         .render(createProd.render, createProd.msg);
     } catch (e) {
-      logger.error(
-        `ProductController.createProductForm: ${JSON.stringify(e.cause)}`
-      );
       CustomError.createError({
         name: 'Create product into form error',
         cause: 'Contact Development team',

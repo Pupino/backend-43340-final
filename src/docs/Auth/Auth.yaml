@@ -1,0 +1,619 @@
+paths:
+  /api/auth/session:
+    get:
+      summary: Get current session.
+      security:
+        - cookieAuth: []
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: Successfully response
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/CurrentSession'
+
+        '400':
+          description: Error usually when there are no user logged.
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/GenericError'
+  /api/auth/register:
+    get:
+      summary: Get form to user registration.
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: register-form handlebar view successfully generated
+          content:
+            text/html:
+              example: |
+                <html lang="en">
+                  <head>
+                    <meta charset="UTF-8" />
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <link rel="stylesheet" href="/main.css" />
+                    <title>Document</title>
+                  </head>
+                  <body>
+                    <form action='/api/auth/register' method='POST'>
+                      <p><input id='email' name='email' type='text' placeholder='email' /></p>
+                      <p><input id='firstName' name='firstName' type='text' placeholder='firstName' /></p>
+                      <p><input id='lastName' name='lastName' type='text' placeholder='lastName' /></p>
+                      <p><input id='age' name='age' type='number' placeholder='age' /></p>
+                      <p><input id='password' name='password' type='password' placeholder='password' /></p>
+                      <p><input type='submit' value='REGISTRAR' /></p>
+                    </form>
+                    <a href='/api/auth/login'>ya tengo cuenta che!</a>
+                  </body>
+                </html>
+    post:
+      summary: User Registration Submit.
+      tags:
+        - Auth
+      requestBody:
+        description: Form Data
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: user email.
+                firstName:
+                  type: string
+                  description: user first name.
+                lastName:
+                  type: string
+                  description: user last name.
+                age:
+                  type: integer
+                  description: user age.
+                password:
+                  type: string
+                  description: user password.
+      responses:
+        '200':
+          description: Registration ok, then all Products handlebar view successfully generated
+          content:
+            text/html:
+              example: |
+                <html lang="en">
+                  <head>
+                    <meta charset="UTF-8" />
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <link rel="stylesheet" href="/main.css" />
+                    <title>Document</title>
+                  </head>
+                  <body>
+                    <div id="modal-overlay" class="modal-overlay">
+                      <div id="spinner" class="spinner"></div>
+                    </div>
+                    <div><strong>WELCOME!</strong><a href='/logout' style="float: right;">LOGOUT</a></div>
+                    {{#if profile.isAdmin}}
+                      <div>Rol: ADMIN</div>
+                    {{else}}
+                      {{#if profile.isPremium}}
+                        <div>Rol: PREMIUM</div>
+                      {{else}}
+                        <div>Rol: USER</div>
+                      {{/if}}
+                    {{/if}}
+                    <div>First Name: {{profile.firstName}}</div>
+                    <div>Last Name: {{profile.lastName}}</div>
+                    <div>Email: {{profile.email}}</div>
+                    <br>
+                    <p><button id="cartBtn">CART</button></p>
+                    {{#if profile.isAdmin }}
+                      <p><a href='/api/products/create' style="float: right;">CREATE PRODUCT</a></p>
+                    {{else}}
+                      {{#if profile.isPremium }}
+                        <p><a href='/api/products/create' style="float: right;">CREATE PRODUCT</a></p>
+                      {{/if}}
+                    {{/if}}
+                    {{#if profile.isAdmin}}
+                      <p><a href='/api/users' style="float: right;">MANAGE USERS</a></p>
+                    {{/if}}
+                    <div>
+                      <strong>Products</strong>
+                      <ol class="alternating-colors">
+                        {{#each payload}}
+                        <li>
+                          <strong>{{this.title}}</strong>
+                          <p>id: {{this.id}}</p>
+                          <p>{{this.description}}</p>
+                          <p>Code: {{this.code}}</p>
+                          <p>Price: {{this.price}}</p>
+                          <p>Stock: {{this.stock}}</p>
+                          <button id="{{this.id}}" class="addCartBtn">Add to Cart</button>
+                          {{#if ../profile.isAdmin}}
+                            <p class="prodOwner">
+                              <button id="{{this.id}}" class="deleteBtn">DELETE Product</button>
+                              Product Owner: {{this.owner}}</p>
+                          {{else}}
+                            {{#if ../profile.isPremium}}
+                              <p class="prodOwner">
+                              <button id="{{this.id}}" class="deleteBtn">DELETE Product</button>
+                              Product Owner: {{this.owner}}</p>
+                                {{/if}}
+                            {{/if}}
+                            <br>
+                        </li>
+                        {{/each}}
+                      </ol>
+                      <p>
+                        {{#if hasPrevPage}}
+                          <a href='/api/products?page={{prevPage}}'>Prev Page</a>
+                        {{/if}}
+                        {{#if pagingCounter}}
+                          pagingCounter: {{pagingCounter}}
+                        {{/if}}
+                        {{#if totalDocs}}
+                          totalDocs: {{totalDocs}}
+                        {{/if}}
+                        {{#if totalPages}}
+                          totalPages: {{totalPages}}
+                        {{/if}}
+                        {{#if hasNextPage}}
+                          <a href='/api/products?page={{nextPage}}'>Next Page</a>
+                        {{/if}}
+                      </p>
+                    </div>
+                    <script src="../js/products.js"></script>
+                  </body>
+                </html>
+        '500':
+          description: Failure Registration
+          content:
+            text/html:
+              example: |
+                <html lang="en">
+                  <head>
+                    <meta charset="UTF-8" />
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <link rel="stylesheet" href="/main.css" />
+                    <title>Document</title>
+                  </head>
+                  <body>
+                    <h1>ALGO SALIO MAL:</h1>
+                    <p>{{msg}}</p>
+                    <a href='/'>Volve a Intentar</a>
+                  </body>
+                </html>
+  /api/auth/failregister:
+    get:
+      summary: Get Fail Register view.
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: register-form handlebar view successfully generated
+          content:
+            text/html:
+              example: |
+                <html lang="en">
+                  <head>
+                    <meta charset="UTF-8" />
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <link rel="stylesheet" href="/main.css" />
+                    <title>Document</title>
+                  </head>
+                  <body>
+                    <h1>ALGO SALIO MAL:</h1>
+                    <p>{{msg}}</p>
+                    <a href='/'>Volve a Intentar</a>
+                  </body>
+                </html>
+        '400':
+          description: Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/GenericError'
+  /api/auth/login:
+    get:
+      summary: Get Login view.
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: register-form handlebar view successfully generated
+          content:
+            text/html:
+              example: |
+                <html lang="en">
+                  <head>
+                    <meta charset="UTF-8" />
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <link rel="stylesheet" href="/main.css" />
+                    <title>Document</title>
+                  </head>
+                  <body>
+                    <div>
+                      <a href='/api/auth/register' style="float:right;">Sign Up</a>
+                    </div>
+                    <form action='/api/auth/login' method='POST'>
+                      <input id='email' name='email' type='text' placeholder='email' value="{{email}}"/>
+                      <input id='password' name='password' type='password' placeholder='password' />
+                      <input type='submit' value='LOGIN' />
+                    </form>
+                  </body>
+                </html>
+        '400':
+          description: Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/GenericError'
+    post:
+      summary: User Login Submit.
+      tags:
+        - Auth
+      requestBody:
+        description: Form Data
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: user email.
+                password:
+                  type: string
+                  description: user password.
+      responses:
+        '200':
+          description: Login ok, then all Products handlebar view successfully generated
+          content:
+            text/html:
+              example: |
+                <html lang="en">
+                  <head>
+                    <meta charset="UTF-8" />
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <link rel="stylesheet" href="/main.css" />
+                    <title>Document</title>
+                  </head>
+                  <body>
+                    <div id="modal-overlay" class="modal-overlay">
+                      <div id="spinner" class="spinner"></div>
+                    </div>
+                    <div><strong>WELCOME!</strong><a href='/logout' style="float: right;">LOGOUT</a></div>
+                    {{#if profile.isAdmin}}
+                      <div>Rol: ADMIN</div>
+                    {{else}}
+                      {{#if profile.isPremium}}
+                        <div>Rol: PREMIUM</div>
+                      {{else}}
+                        <div>Rol: USER</div>
+                      {{/if}}
+                    {{/if}}
+                    <div>First Name: {{profile.firstName}}</div>
+                    <div>Last Name: {{profile.lastName}}</div>
+                    <div>Email: {{profile.email}}</div>
+                    <br>
+                    <p><button id="cartBtn">CART</button></p>
+                    {{#if profile.isAdmin }}
+                      <p><a href='/api/products/create' style="float: right;">CREATE PRODUCT</a></p>
+                    {{else}}
+                      {{#if profile.isPremium }}
+                        <p><a href='/api/products/create' style="float: right;">CREATE PRODUCT</a></p>
+                      {{/if}}
+                    {{/if}}
+                    {{#if profile.isAdmin}}
+                      <p><a href='/api/users' style="float: right;">MANAGE USERS</a></p>
+                    {{/if}}
+                    <div>
+                      <strong>Products</strong>
+                      <ol class="alternating-colors">
+                        {{#each payload}}
+                        <li>
+                          <strong>{{this.title}}</strong>
+                          <p>id: {{this.id}}</p>
+                          <p>{{this.description}}</p>
+                          <p>Code: {{this.code}}</p>
+                          <p>Price: {{this.price}}</p>
+                          <p>Stock: {{this.stock}}</p>
+                          <button id="{{this.id}}" class="addCartBtn">Add to Cart</button>
+                          {{#if ../profile.isAdmin}}
+                            <p class="prodOwner">
+                              <button id="{{this.id}}" class="deleteBtn">DELETE Product</button>
+                              Product Owner: {{this.owner}}</p>
+                          {{else}}
+                            {{#if ../profile.isPremium}}
+                              <p class="prodOwner">
+                              <button id="{{this.id}}" class="deleteBtn">DELETE Product</button>
+                              Product Owner: {{this.owner}}</p>
+                                {{/if}}
+                            {{/if}}
+                            <br>
+                        </li>
+                        {{/each}}
+                      </ol>
+                      <p>
+                        {{#if hasPrevPage}}
+                          <a href='/api/products?page={{prevPage}}'>Prev Page</a>
+                        {{/if}}
+                        {{#if pagingCounter}}
+                          pagingCounter: {{pagingCounter}}
+                        {{/if}}
+                        {{#if totalDocs}}
+                          totalDocs: {{totalDocs}}
+                        {{/if}}
+                        {{#if totalPages}}
+                          totalPages: {{totalPages}}
+                        {{/if}}
+                        {{#if hasNextPage}}
+                          <a href='/api/products?page={{nextPage}}'>Next Page</a>
+                        {{/if}}
+                      </p>
+                    </div>
+                    <script src="../js/products.js"></script>
+                  </body>
+                </html>
+        '500':
+          description: invalid credentials
+          content:
+            text/html:
+              example: |
+                <html lang="en">
+                  <head>
+                    <meta charset="UTF-8" />
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <link rel="stylesheet" href="/main.css" />
+                    <title>Document</title>
+                  </head>
+                  <body>
+                    <h1>ALGO SALIO MAL:</h1>
+                    <p>{{msg}}</p>
+                    <a href='/'>Volve a Intentar</a>
+                  </body>
+                </html>
+  /api/auth/faillogin:
+    get:
+      summary: Get Fail Login view.
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: fail to login handlebar view successfully generated
+          content:
+            text/html:
+              example: |
+                <html lang="en">
+                  <head>
+                    <meta charset="UTF-8" />
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <link rel="stylesheet" href="/main.css" />
+                    <title>Document</title>
+                  </head>
+                  <body>
+                    <h1>ALGO SALIO MAL:</h1>
+                    <p>{{msg}}</p>
+                    <a href='/'>Volve a Intentar</a>
+                  </body>
+                </html>
+        '400':
+          description: Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/GenericError'
+  /api/auth/logout:
+    get:
+      summary: Get Login view after Logout.
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: login-form handlebar view successfully generated
+          content:
+            text/html:
+              example: |
+                <html lang="en">
+                  <head>
+                    <meta charset="UTF-8" />
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <link rel="stylesheet" href="/main.css" />
+                    <title>Document</title>
+                  </head>
+                  <body>
+                    <div>
+                      <a href='/api/auth/register' style="float:right;">Sign Up</a>
+                    </div>
+                    <form action='/api/auth/login' method='POST'>
+                      <input id='email' name='email' type='text' placeholder='email' value="{{email}}"/>
+                      <input id='password' name='password' type='password' placeholder='password' />
+                      <input type='submit' value='LOGIN' />
+                    </form>
+                  </body>
+                </html>
+        '400':
+          description: Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/GenericError'
+        '500':
+          description: no se pudo cerrar su session
+          content:
+            text/html:
+              example: |
+                <html lang="en">
+                  <head>
+                    <meta charset="UTF-8" />
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <link rel="stylesheet" href="/main.css" />
+                    <title>Document</title>
+                  </head>
+                  <body>
+                    <h1>ALGO SALIO MAL:</h1>
+                    <p>{{msg}}</p>
+                    <a href='/'>Volve a Intentar</a>
+                  </body>
+                </html>
+  /api/auth/perfil:
+    get:
+      summary: Get User Perfil. User must be logged in as user.
+      security:
+        - cookieAuth: []
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: perfil handlebar view successfully generated
+          content:
+            text/html:
+              example: |
+                <html lang="en">
+                  <head>
+                    <meta charset="UTF-8" />
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <link rel="stylesheet" href="/main.css" />
+                    <title>Document</title>
+                  </head>
+                  <body>
+                    <h1>Perfil</h1>
+
+                    Email:
+                    {{user.email}}
+                    <br />
+                    User Role:
+                    {{#if user.isAdmin}}
+                        <div>ADMIN</div>
+                    {{else}}
+                        <div>USER</div>
+                    {{/if}}
+                    <br />
+                    <a href='/api/auth/administracion'>Ver datos super secretos<a>
+
+                    <br />
+                    <a href='/api/auth/logout'>Salir!</a>
+                  </body>
+                </html>
+        '400':
+          description: Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/GenericError'
+  /api/auth/administracion:
+    get:
+      summary: Get datos super secretos clasificados sobre los nuevos ingresos a boca juniors. User must be logged in as user Admin.
+      security:
+        - cookieAuth: []
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: perfil handlebar view successfully generated
+          content:
+            text/html:
+              example: |
+                datos super secretos clasificados sobre los nuevos ingresos a boca juniors
+components:
+  schemas:
+    CurrentSession:
+      type: object
+      properties:
+        cookie:
+          type: object
+          properties:
+            originalMaxAge:
+              type: null
+              description: Original Max Age.
+            expires:
+              type: null
+              description: Fecha de expiración.
+            httpOnly:
+              type: boolean
+              description: Si es HttpOnly.
+            path:
+              type: string
+              description: Ruta de la cookie.
+        passport:
+          type: object
+          properties:
+            user:
+              type: string
+              description: ID del usuario Passport.
+        user:
+          type: object
+          properties:
+            _id:
+              type: string
+              description: ID del usuario.
+            email:
+              type: string
+              description: Correo electrónico del usuario.
+            firstName:
+              type: string
+              description: Nombre del usuario.
+            lastName:
+              type: string
+              description: Apellido del usuario.
+            isAdmin:
+              type: boolean
+              description: Si el usuario es administrador.
+      example:
+        cookie:
+          originalMaxAge: null
+          expires: null
+          httpOnly: true
+          path: '/'
+        passport:
+          user: '652feba26c00c419244d4474'
+        user:
+          _id: '652feba26c00c419244d4474'
+          email: 'roman@gmail.com'
+          firstName: 'Roman'
+          lastName: 'Riquelme'
+          isAdmin: false
+    GenericError:
+      type: object
+      properties:
+        status:
+          type: string
+        error:
+          type: string
+        cause:
+          type: string
+        errorBackend:
+          type: object
+          properties:
+            name:
+              type: string
+            code:
+              type: integer
+      example:
+        status: error
+        error: xxxxx xxxxxx xxxxxx error
+        cause: Contact Development team
+        errorBackend:
+          name": xxxxx xxxxxx xxxxx error
+          code: 11
+  # 1) Define the cookie name
+  # Note for Swagger UI and Swagger Editor users: Cookie authentication is currently not supported for "try it out" requests due to browser security restrictions. See this issue for more information. SwaggerHub does not have this limitation.
+  securitySchemes:
+    cookieAuth: # arbitrary name for the security scheme; will be used in the "security" key later
+      type: apiKey
+      in: cookie
+      name: connect.sid # cookie name
