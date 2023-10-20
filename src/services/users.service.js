@@ -86,9 +86,7 @@ class UserService {
 
   async cleanUsers() {
     try {
-      console.log(`Linea 89 cleanUsers`);
       const users = await usersModel.getUsers();
-      console.log(`Linea 90 users: ${JSON.stringify(users)}`);
       let deletedUsers = [];
       if (users) {
         for (const user of users) {

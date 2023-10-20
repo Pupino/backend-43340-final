@@ -34,9 +34,7 @@ class UserController {
   async getUserById(req, res) {
     try {
       const userId = req.params.uid;
-      console.log(`Linea 37 userId: ${userId}`);
       const userById = await userService.getUserById(userId);
-      console.log(`Linea 38 userById: ${JSON.stringify(userById)}`);
       //romina devolver vista para permitir editar y eliminar usuario
       const userFormatted = {
         id: userById.user._id,
@@ -200,7 +198,6 @@ class UserController {
 
   async cleanUsers(req, res) {
     try {
-      console.log(`Linea 203 cleanUsers`);
       const usersCleaned = await userService.cleanUsers();
       return res.status(200).json({
         status: 'success',
