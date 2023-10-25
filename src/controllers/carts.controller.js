@@ -6,7 +6,6 @@ import { ticketService } from '../services/tickets.service.js';
 import CustomError from '../services/errors/custom-error.js';
 import EErros from '../services/errors/enum.js';
 import { logger } from '../Utils/logger.js';
-//import ProductDTO from '../dao/DTO/product.dto.js';
 
 class CartsController {
   async getAll(req, res) {

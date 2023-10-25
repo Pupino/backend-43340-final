@@ -1,10 +1,6 @@
 //@ts-check
 import { productsModel } from '../dao/factory.js';
-//import { productsModel } from '../dao/mongo/products.mongo.js';
-//import { productsModel } from '../dao/memory/products.memory.js';
 import ProductDTO from '../dao/DTO/product.dto.js';
-import CustomError from '../services/errors/custom-error.js';
-import EErros from '../services/errors/enum.js';
 import { createProductErrorInfo } from '../services/errors/info.js';
 import { logger } from '../Utils/logger.js';
 import { sendEmailTransport } from '../Utils/messaging.js';
@@ -21,12 +17,6 @@ class ProductService {
       !product.category
     ) {
       throw new Error(createProductErrorInfo(product));
-      // CustomError.createError({
-      //   name: 'Product Creation Validation',
-      //   cause: createProductErrorInfo(product),
-      //   message: 'Some field is missed, check cause.',
-      //   code: EErros.CREATE_PRODUCT_ERROR,
-      // });
     }
   }
   async validateUniqueCode(code) {
@@ -35,12 +25,6 @@ class ProductService {
     const exists = await productsModel.validateUniqueCode(code);
     if (exists) {
       throw new Error(`Product code '${code}' already exists.`);
-      // CustomError.createError({
-      //   name: 'Product Unique Code Validation',
-      //   cause: `Product code '${code}' already exists.`,
-      //   message: 'Code must be unique',
-      //   code: EErros.CREATE_PRODUCT_ERROR,
-      // });
     }
   }
   async validateIdExists(id) {
@@ -48,12 +32,6 @@ class ProductService {
       const exists = await productsModel.getProductById(id);
       if (!exists) {
         throw new Error(`Product id '${id}' doesn't exists.`);
-        // CustomError.createError({
-        //   name: 'ID Product validation error',
-        //   cause: `Product id '${id}' doesn't exists.`,
-        //   message: 'Error trying to validate a product id',
-        //   code: EErros.PRODUCT_ID_VALIDATION,
-        // });
       }
     } catch (e) {
       throw e;
@@ -138,12 +116,6 @@ class ProductService {
         throw new Error(
           `Product id '${id}'can't be updated since you're not Admin or not Owner of product.`
         );
-        // CustomError.createError({
-        //   name: 'Update Product validation error',
-        //   cause: `Product id '${id}'can't be updated since you're not Admin or not Owner of product.`,
-        //   message: `Product id '${id}'can't be updated since you're not Admin or not Owner of product.`,
-        //   code: EErros.PRODUCT_UPDATE_VALIDATION_ERROR,
-        // });
       }
     } catch (e) {
       throw e;
@@ -179,12 +151,6 @@ class ProductService {
         throw new Error(
           `Product id '${id}'can't be Delete since you're not Admin or not Owner of product.`
         );
-        // CustomError.createError({
-        //   name: 'Delete Product validation error',
-        //   cause: `Product id '${id}'can't be Delete since you're not Admin or not Owner of product.`,
-        //   message: `Product id '${id}'can't be Delete since you're not Admin or not Owner of product.`,
-        //   code: EErros.PRODUCT_DELETE_VALIDATION_ERROR,
-        // });
       }
     } catch (e) {
       throw e;

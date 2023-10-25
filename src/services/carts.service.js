@@ -50,9 +50,6 @@ class CartService {
   async updateProdsOnCart(cid, prodsArray) {
     try {
       const prodsUpdated = await cartsModel.updateProdsOnCart(cid, prodsArray);
-      /*let prods = await CartModel.find({ _id: cid }).populate(
-      'productsArray.prodId'
-      );*/
       return prodsUpdated;
     } catch (e) {
       throw e;

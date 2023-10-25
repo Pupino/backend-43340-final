@@ -1,14 +1,7 @@
 //@ts-check
 import { usersModel } from '../dao/factory.js';
-//import { productsModel } from '../dao/mongo/products.mongo.js';
-//import { productsModel } from '../dao/memory/products.memory.js';
 import { sendEmailTransport } from '../Utils/messaging.js';
 import { entorno } from '../config.js';
-import ProductDTO from '../dao/DTO/product.dto.js';
-import CustomError from '../services/errors/custom-error.js';
-import EErros from '../services/errors/enum.js';
-import { createProductErrorInfo } from '../services/errors/info.js';
-import { logger } from '../Utils/logger.js';
 import { createHash, isValidPassword } from '../Utils/validations.js';
 
 class UserService {

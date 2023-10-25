@@ -1,5 +1,4 @@
 import { entorno } from '../config.js';
-//import { connectMongo } from '../Utils/connections.js';
 
 let cartsPersist;
 let productsPersist;
@@ -8,7 +7,6 @@ let usersPersist;
 
 switch (entorno.PERSISTENCE) {
   case 'MONGO':
-    //connectMongo(); //to implement that here, I need to create users.memory.js and update passport.config.js
     //Carts
     const { default: CartModelMongo } = await import('./mongo/carts.mongo.js');
     cartsPersist = CartModelMongo;

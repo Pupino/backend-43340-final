@@ -1,5 +1,4 @@
 import { faker } from '@faker-js/faker';
-//faker.locale = 'es';
 
 export const generateUser = () => {
   const numOfProducts = parseInt(
@@ -23,9 +22,7 @@ export const generateUser = () => {
 };
 
 export const generateProduct = () => {
-  //throw new Error('Forcing an error');
   return {
-    //_id: faker.database.mongodbObjectId(),
     title: faker.commerce.productName(),
     description: faker.commerce.productDescription(),
     code: faker.lorem.word(5),

@@ -3,7 +3,6 @@ import { ProductModel } from './models/products.model.js';
 export default class Products {
   //returns all products object
   async getAllProducts(plimit, ppage, psort, pquery) {
-    //const products = await ProductModel.find().lean(); //adding lean() to get a json object (instead of a mongoose one), otherwise handlebars issue appears
     let query;
     if (pquery) {
       query = { code: pquery };
@@ -11,8 +10,6 @@ export default class Products {
     const products = await ProductModel.paginate(
       {},
       { limit: /*  limit || */ 10, page: ppage || 1 }
-      //query || {}, //tomar esto dinamicamente mediante el parámetro pquery
-      //{ limit: plimit || 10, page: ppage || 1, sort: { price: psort } }
     );
     let finalProducts;
     finalProducts = products.docs;
@@ -86,5 +83,3 @@ export default class Products {
     }
   }
 }
-
-//export const productsModel = new Products();

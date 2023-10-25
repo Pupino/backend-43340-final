@@ -1,6 +1,4 @@
 import express from 'express';
-//import { ProductManager } from '../DAO/ProductManager.js';
-//const store = new ProductManager();
 import { productService } from '../services/products.service.js';
 import { logger } from '../Utils/logger.js';
 

@@ -68,7 +68,6 @@ class AuthService {
       isPremium: user.isPremium,
       cartId: user.cartId,
     };
-    //settear lastConnection = sysdate
     const userUpdated = usersModel.setLastConnection(user._id);
     let rta = {
       status: 200,

@@ -35,7 +35,6 @@ class UserController {
     try {
       const userId = req.params.uid;
       const userById = await userService.getUserById(userId);
-      //romina devolver vista para permitir editar y eliminar usuario
       const userFormatted = {
         id: userById.user._id,
         email: userById.user.email,
@@ -51,11 +50,6 @@ class UserController {
       return res.render(userById.render, {
         payload: userFormatted,
       });
-      // return res.status(201).json({
-      //   status: 'success',
-      //   msg: `Mostrando el usuario con id ${userId}`,
-      //   payload: { userById },
-      // });
     } catch (e) {
       CustomError.createError({
         name: 'Get User by Id',
@@ -133,7 +127,6 @@ class UserController {
         message: e,
         code: EErros.LOGIN_USER_ERROR,
       });
-      //return null;
     }
   }
 

@@ -119,5 +119,3 @@ export default class UsersModel {
     }
   }
 }
-
-//export const usersModel = new UsersModel();

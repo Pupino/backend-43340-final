@@ -26,7 +26,6 @@ export default class Carts {
     try {
       const cartCreated = await CartModel.create({
         userId: uid,
-        //productsArray: [{ prodId: null, quantity: '' }],
       });
       return cartCreated;
     } catch (e) {
@@ -37,7 +36,6 @@ export default class Carts {
   async getProductsByCartId(id) {
     //returns products array belong to cart id
     try {
-      //const products = await CartModel.findById(id).populate('productsArray');
       const products = await CartModel.findById(id).populate({
         path: 'productsArray.prodId',
         select: 'title price stock owner', // getting fields from products model
@@ -132,5 +130,3 @@ export default class Carts {
     return cartReseted;
   }
 }
-
-//export const cartsModel = new Carts();

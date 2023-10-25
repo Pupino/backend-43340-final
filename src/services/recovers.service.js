@@ -1,9 +1,6 @@
 import { recoverCodesModel } from '../dao/factory.js';
 import { UserModel } from '../dao/mongo/models/users.model.js';
 import { entorno } from '../config.js';
-import ProductDTO from '../dao/DTO/product.dto.js';
-import CustomError from '../services/errors/custom-error.js';
-import EErros from '../services/errors/enum.js';
 import crypto from 'crypto';
 import { sendEmailTransport } from '../Utils/messaging.js';
 import { logger } from '../Utils/logger.js';
@@ -40,16 +37,11 @@ class RecoverService {
       logger.debug(`foundRecoverCode: ${foundRecoverCode}`);
       logger.debug(`foundRecoverCode.expire: ${foundRecoverCode.expire}`);
       logger.debug(`Date.now(): ${Date.now()}`);
-      //res.send(JSON.stringify(foundRecoverCode));
       if (Date.now() < foundRecoverCode.expire) {
-        //res.render('recover-pass', { email, code });
         const rta = { view: 'recover-pass', msg: '', email, code };
         logger.debug(`rta en service: ${JSON.stringify(rta)}`);
         return rta;
       } else {
-        // res.render('error-page', {
-        //   msg: 'Se venció el tiempo del code enviado',
-        // });
         const rta = {
           view: 'error-page',
           msg: 'Se venció el tiempo del code enviado',
@@ -77,7 +69,7 @@ class RecoverService {
         let userPswUpdated = await UserModel.updateOne(
           { email },
           { password: hashedPassword }
-        ); //ROMINA! handle when MEMORY is runnning, create
+        );
         //enviar al usuario al login
         logger.debug(`userPswUpdated: ${JSON.stringify(userPswUpdated)}`);
         const rta = {

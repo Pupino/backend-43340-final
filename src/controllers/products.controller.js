@@ -27,9 +27,7 @@ class ProductController {
       );
       return res.render('products', {
         status: 'success',
-        //payload: products.docs.map((product) => ({
         payload: products.map((product) => ({
-          //id: product._id,
           id: product.id,
           title: product.title,
           description: product.description,
@@ -46,8 +44,6 @@ class ProductController {
         page: products.page,
         hasPrevPage: products.hasPrevPage,
         hasNextPage: products.hasNextPage,
-        //prevLink: Link directo a la página previa (null si hasPrevPage=false)
-        //nextLink: Link directo a la página siguiente (null si hasNextPage=false)
         totalDocs: products.totalDocs,
         limit: products.limit,
         pagingCounter: products.pagingCounter,
@@ -96,11 +92,6 @@ class ProductController {
         emailUser
       );
       return res.redirect(newProduct.redirect);
-      // return res.status(200).json({
-      //   status: 'success',
-      //   msg: 'product created',
-      //   data: newProduct,
-      // });
     } catch (e) {
       CustomError.createError({
         name: 'Create Product',
@@ -116,8 +107,6 @@ class ProductController {
     let errorEncontradoMsg;
     try {
       const products = req.body;
-      //const isPremiumUser = req.session.user.isPremium;
-      //const emailUser = req.session.user.email;
       for (const product of products) {
         try {
           const newProduct = await productService.createProduct(
@@ -156,7 +145,6 @@ class ProductController {
           product
         )} and pid: ${pid}`
       );
-      //const rta = await store.updateProduct(pid, product);
       const updatedProduct = await productService.updateProduct(
         pid,
         product,
@@ -189,7 +177,6 @@ class ProductController {
       const isAdminUser = req.session.user.isAdmin;
       const isPremiumUser = req.session.user.isPremium;
       const emailUser = req.session.user.email;
-      //const rta = await store.deleteProduct(pid);
       const deletedProduct = await productService.deleteProduct(
         pid,
         isAdminUser,
